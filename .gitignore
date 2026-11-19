@@ -1,0 +1,19 @@
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+
+# Ambiente
+.env
+.venv/
+venv/
+__pycache__/
+node_modules/
+
+# Local
+.claude/
+CLAUDE.md
