@@ -7,13 +7,12 @@ desktop.ini
 .vscode/
 .idea/
 
-# Ambiente
-.env
+# Python
 .venv/
 venv/
 __pycache__/
-node_modules/
+*.pyc
+.ipynb_checkpoints/
 
-# Local
-.claude/
-CLAUDE.md
+# Ambiente
+.env

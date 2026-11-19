@@ -1,0 +1,8 @@
+NObeyesdad,Insufficient_Weight,Normal_Weight,Obesity_Type_I,Obesity_Type_II,Obesity_Type_III
+Insufficient_Weight,178,6,45,43,0
+Normal_Weight,160,36,34,55,2
+Overweight_Level_I,63,11,65,125,26
+Overweight_Level_II,55,6,94,125,10
+Obesity_Type_I,48,2,111,145,45
+Obesity_Type_II,1,2,95,198,1
+Obesity_Type_III,0,0,1,1,322
