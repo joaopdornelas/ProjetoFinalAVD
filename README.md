@@ -25,8 +25,13 @@ ProjetoFinalAVD/
 ├─ src/
 │  ├─ parte_comum/
 │  └─ parte_especifica/
+│     ├─ config.py            # caminhos, nomes de colunas, ordens e cores
+│     ├─ preparacao.py        # dado bruto -> out/parte_especifica/hepatite_tratado.csv
 │     ├─ eda.ipynb
-│     └─ dashboard.py
+│     ├─ graficos.py          # funções de gráfico (plotly)
+│     ├─ notas.py             # pergunta, público-alvo e notas analíticas
+│     ├─ dashboard.py         # app Streamlit
+│     └─ paginas/             # uma página do dashboard por arquivo
 └─ relatorio.pdf
 ```
 
@@ -49,6 +54,7 @@ jupyter notebook notebooks/parte_comum/eda.ipynb
 jupyter notebook notebooks/parte_comum/kmeans_metricas.ipynb
 
 # Parte Específica
+python src/parte_especifica/preparacao.py
 jupyter notebook src/parte_especifica/eda.ipynb
 streamlit run src/parte_especifica/dashboard.py
 ```
