@@ -62,3 +62,7 @@ streamlit run src/parte_especifica/dashboard.py
 ## Autores
 
 - João Pedro Rodrigues
+- Ivan Pinto da Rocha Filho
+- Arthur Queiroz Silva
+- Jarbas 
+- Gabriel Belo
