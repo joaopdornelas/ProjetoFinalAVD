@@ -26,7 +26,7 @@ def render(df):
     opcoes_cor = [SEM_COR] + qualitativas
     cor = c3.selectbox('Cor', opcoes_cor, index=opcoes_cor.index('categoria'),
                        format_func=lambda c: c if c == SEM_COR else config.rotulo(c), key='exp_cor')
-    cor = None if cor == SEM_COR or cor in (x, y) else cor
+    cor = None if cor == SEM_COR else cor
 
     st.plotly_chart(graficos.fig_relacao(df, x, y, cor), width='stretch', key='exp_principal')
 

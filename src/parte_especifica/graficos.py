@@ -197,6 +197,7 @@ EXPLANATORIAS = [
 # Explorador livre
 # ---------------------------------------------------------------------------
 
+# [IA] Gemini – aumento dos marcadores e configuração da legenda para legibilidade
 def fig_relacao(df, x, y, cor=None):
     quant_x, quant_y = eh_quantitativa(df, x), eh_quantitativa(df, y)
     cores = config.CORES_CATEGORIA if cor == 'categoria' else None
@@ -204,15 +205,30 @@ def fig_relacao(df, x, y, cor=None):
 
     if quant_x and quant_y:
         fig = px.scatter(df, x=x, y=y, color=cor, opacity=0.75, **comum)
+        fig.update_traces(marker=dict(size=11))
     elif quant_y:
         fig = px.box(df, x=x, y=y, color=cor, points='outliers', **comum)
+        fig.update_traces(marker=dict(size=8))
     elif quant_x:
         fig = px.box(df, x=x, y=y, color=cor, points='outliers', orientation='h', **comum)
+        fig.update_traces(marker=dict(size=8))
     else:
         cores = config.CORES_CATEGORIA if y == 'categoria' else None
         comum['color_discrete_map'] = cores
         fig = px.histogram(df, x=x, color=y, barmode='group', **comum)
         fig.update_yaxes(title_text='Registros')
+
+    legenda_col = cor if (quant_x or quant_y) else y
+    if legenda_col is not None:
+        fig.update_layout(
+            showlegend=True,
+            legend=dict(
+                title_text=config.rotulo(legenda_col),
+                font=dict(size=13),
+                title_font=dict(size=13),
+                itemsizing='constant',
+            ),
+        )
 
     titulo = f'{config.NOMES.get(y, y)} × {config.NOMES.get(x, x)}'
     return aplicar_layout(fig, f'{titulo} (n = {len(df)})')

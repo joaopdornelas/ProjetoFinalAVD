@@ -9,6 +9,23 @@ import streamlit as st
 
 st.set_page_config(page_title='Projeto Final AVD — Hepatite C', layout='wide')
 
+# [IA] Gemini – ajuste discreto no tamanho da fonte da barra lateral
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label p {
+        font-size: 16.5px !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] {
+        gap: 6px !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 import config
 import preparacao
 from paginas import contexto, exploracao, explorador, parte_comum, resposta
