@@ -32,13 +32,15 @@ As barras permitem comparar os tamanhos dos grupos e observar sua composição p
     },
     'ausentes': {
         'o_que_mostra': """
-Como as ausências se distribuem entre os grupos e os exames.
+Como as ausências se distribuem entre os grupos e os exames. O primeiro heatmap cruza diagnóstico e exame; o segundo cruza sexo e exame.
 """,
         'insight': """
 ALP está ausente em 42,9% dos registros de fibrose e em 20% dos de cirrose, enquanto todos os doadores comuns possuem esse exame observado.
+
+Por sexo, as mulheres têm menos ausências em ALP (2,5% contra 3,2% dos homens) e nenhuma ausência em ALB, ALT e PROT. Em CHOL, porém, a relação se inverte: 2,9% das mulheres contra 0,8% dos homens, e seis das sete ausências femininas de CHOL são de doadoras. No total, 12 das 238 mulheres (5,0%) e 14 dos 377 homens (3,7%) têm pelo menos um exame ausente. A diferença entre os sexos depende do exame e é pequena em números absolutos, por isso não sustenta uma conclusão geral de que um dos sexos omite menos resultados.
 """,
         'por_que_esse_grafico': """
-O heatmap facilita a identificação de concentrações de ausência e fundamenta a discussão do tratamento.
+O heatmap facilita a identificação de concentrações de ausência e fundamenta a discussão do tratamento. Cada célula mostra o percentual e a contagem, para que percentuais altos em grupos pequenos não sejam superestimados.
 """,
     },
     'ast_ggt': {
@@ -48,7 +50,14 @@ A relação conjunta entre os exames e a distribuição dos participantes de cad
         'insight': """
 A maior concentração dos doadores fica na região inferior esquerda. Seus 50% centrais estão aproximadamente entre 21,1 e 29,8 em AST e entre 15,1 e 32 em GGT.
 
-Os grupos com doença apresentam, em geral, valores centrais maiores. Hepatite tem medianas de AST e GGT de 47,2 e 45,55. Em fibrose, são 70 e 72,2. Em cirrose, 92,9 e 96,35.
+Os grupos com doença apresentam, em geral, valores centrais maiores:
+
+| Diagnóstico | AST (mediana) | GGT (mediana) |
+|---|---:|---:|
+| Doadores | 24,8 | 21,4 |
+| Hepatite | 47,2 | 45,55 |
+| Fibrose | 70,0 | 72,2 |
+| Cirrose | 92,9 | 96,35 |
 
 A sobreposição aparece na região intermediária e nas caudas. Existem doadores com valores elevados e participantes com doença com valores menores. Hepatite, fibrose e cirrose também se misturam entre si. Assim, as duas variáveis mostram tendências de grupo, mas a posição de um ponto não determina sua categoria.
 
@@ -59,36 +68,42 @@ A associação geral pode ser descrita como positiva moderada, usando essa class
 | Doadores | 533 | 0,381 |
 | Doadores suspeitos | 7 | 0,214 |
 | Hepatite | 24 | 0,624 |
-| Fibrose | 21 | 0,440 |
+| Fibrose | 21 | 0,441 |
 | Cirrose | 30 | 0,089 |
 | Amostra completa | 615 | 0,505 |
 
 A relação varia bastante. Em cirrose, ela é praticamente nula nesta amostra. A estimativa dos suspeitos é especialmente instável por envolver sete registros.
 """,
         'por_que_esse_grafico': """
-Cada ponto representa um participante, permitindo observar tendências, dispersão e observações extremas.
+Escolhemos o gráfico de dispersão porque AST e GGT são duas variáveis quantitativas e a pergunta é sobre a relação entre elas e sobre a separação dos grupos. Cada ponto representa um participante, o que permite ver ao mesmo tempo a tendência conjunta, a dispersão, as observações extremas e a sobreposição entre os diagnósticos, algo que um resumo por médias ou um boxplot de cada exame separado não mostraria.
+
+Os dois eixos estão em escala logarítmica porque os exames são muito assimétricos: a maioria dos doadores fica abaixo de 50 U/L, mas há participantes acima de 300 U/L. Na escala linear, os doadores ficariam comprimidos no canto do gráfico. As marcas dos eixos seguem a sequência 1, 2, 5, 10, 20, 50…, e a grade secundária ajuda a ler os valores intermediários.
 """,
     },
     'spearman': {
         'o_que_mostra': """
-Associações monotônicas entre as variáveis quantitativas.
+Associações monotônicas entre as variáveis quantitativas. Como a matriz é simétrica (ALB × PROT é igual a PROT × ALB) e a diagonal sempre vale 1, mostramos apenas o triângulo inferior, sem repetições.
 """,
         'insight': """
 Na base tratada, os maiores coeficientes positivos são:
 
-- ALB × PROT — 0,517.
-- AST × GGT — 0,505.
-- ALT × AST — 0,497.
-- ALT × GGT — 0,418.
-- CHE × CHOL — 0,403.
+| Par | Spearman |
+|---|---:|
+| ALB × PROT | 0,517 |
+| AST × GGT | 0,505 |
+| ALT × AST | 0,497 |
+| ALT × GGT | 0,418 |
+| CHE × CHOL | 0,403 |
 
 As associações negativas de maior magnitude são fracas:
 
-- Idade × ALB — −0,158.
-- BIL × CHOL — −0,119.
-- Idade × PROT — −0,100.
+| Par | Spearman |
+|---|---:|
+| Idade × ALB | −0,158 |
+| BIL × CHOL | −0,119 |
+| Idade × PROT | −0,100 |
 
-Entre as praticamente nulas estão idade × BIL, −0,005, ALB × AST, 0,028, e ALB × GGT, 0,034. Esses valores descrevem associação monotônica, e relações de outro formato podem passar despercebidas.
+Entre as praticamente nulas estão idade × BIL (−0,005), ALB × AST (0,028) e ALB × GGT (0,034). Esses valores descrevem associação monotônica, e relações de outro formato podem passar despercebidas.
 
 | Par | Spearman |
 |---|---:|
@@ -101,12 +116,12 @@ Entre as praticamente nulas estão idade × BIL, −0,005, ALB × AST, 0,028, e 
 
 AST e GGT apresentam a associação mais evidente. CHE apresenta relações gerais fracas com os outros três, embora sua distribuição por diagnóstico mostre diferenças importantes.
 
-Com a idade, as maiores associações são com ALP, 0,186, CHOL, 0,175, e ALB, −0,158. São relações fracas. A correlação com BIL é praticamente zero.
+Com a idade, as maiores associações são com ALP (0,186), CHOL (0,174) e ALB (−0,158). São relações fracas. A correlação com BIL é praticamente zero.
 
 Os doadores representam aproximadamente 86,7% da amostra e têm grande influência nas correlações gerais. Esses coeficientes combinam a variação dentro dos grupos com diferenças entre eles. Por isso, a correlação da amostra completa precisa ser acompanhada das correlações por categoria, como mostra a comparação de AST × GGT.
 """,
         'por_que_esse_grafico': """
-A matriz resume todos os pares de variáveis quantitativas e permite comparar a intensidade das associações.
+A matriz resume todos os pares de variáveis quantitativas e permite comparar a intensidade das associações. A escala de cores vai do roxo (associação negativa) ao verde (positiva), passando pelo branco (sem associação). O verde acompanha a identidade visual do dashboard e o roxo foi escolhido por contrastar bem com ele, inclusive para pessoas com daltonismo.
 """,
     },
     'perfis': {
@@ -114,7 +129,14 @@ A matriz resume todos os pares de variáveis quantitativas e permite comparar a 
 Diferenças de posição, dispersão e sobreposição entre as categorias.
 """,
         'insight': """
-As medianas observadas de AST são 24,8 nos doadores, 47,2 em hepatite, 70 em fibrose e 92,9 em cirrose. Para CHE, a mediana de cirrose é 3,43, enquanto a dos doadores é 8,35. As diferenças entre categorias descrevem participantes distintos e não representam o acompanhamento da evolução de uma mesma pessoa.
+| Diagnóstico | AST (mediana) | GGT (mediana) | BIL (mediana) | CHE (mediana) |
+|---|---:|---:|---:|---:|
+| Doadores | 24,8 | 21,4 | 6,9 | 8,35 |
+| Hepatite | 47,2 | 45,55 | 13,0 | 9,51 |
+| Fibrose | 70,0 | 72,2 | 13,0 | 8,59 |
+| Cirrose | 92,9 | 96,35 | 34,0 | 3,43 |
+
+As diferenças entre categorias descrevem participantes distintos e não representam o acompanhamento da evolução de uma mesma pessoa. O tamanho de cada grupo aparece no subtítulo do gráfico e ao passar o mouse sobre cada caixa.
 
 AST e GGT mostram uma separação mais clara dos 50% centrais dos doadores em relação aos três grupos com doença:
 
@@ -140,32 +162,44 @@ Responde diretamente como os quatro perfis laboratoriais diferem entre os grupos
 
 **Destaque anterior.** Na visualização 5, as cinco categorias recebem cores distintas e disputam atenção. Falta uma hierarquia visual que conduza ao contraste principal.
 
-**Atributo utilizado.** Contexto em cinza, mantendo cirrose na cor já utilizada para essa categoria. Os rótulos e as medianas devem permanecer legíveis em todos os grupos.
+**Atributo utilizado.** Contexto em cinza, mantendo cirrose no vermelho usado para essa categoria em todo o dashboard. Os rótulos e as medianas devem permanecer legíveis em todos os grupos.
 
 **Por que serve ao público.** Estudantes e pesquisadores precisam identificar o contraste principal e depois examinar a distribuição e as exceções. O destaque reduz a dependência da leitura repetida da legenda. Rótulos diretos, contagens e posição consistente complementam as cores e favorecem a leitura por pessoas com daltonismo.
 """,
     },
     'tercis_ggt': {
         'o_que_mostra': """
-A composição de cada categoria segundo a posição do GGT na distribuição da amostra.
+O primeiro gráfico mostra a composição de cada categoria segundo a posição do GGT na distribuição da amostra. O segundo compara os quatro exames com a distribuição dos doadores, tomada como referência de normalidade: as anomalias são os valores que ficam além da fronteira externa do boxplot dos doadores, isto é, abaixo de Q1 − 1,5·IQR ou acima de Q3 + 1,5·IQR.
 """,
         'insight': """
 O tercil superior reúne 25,3% dos doadores, 79,2% dos registros de hepatite, 85,7% dos de fibrose e 90% dos de cirrose. Entre os doadores suspeitos, são seis dos sete participantes.
+
+Percentual de cada grupo fora da faixa de referência dos doadores:
+
+| Diagnóstico | AST | GGT | BIL | CHE |
+|---|---:|---:|---:|---:|
+| Doadores | 4,5% | 10,5% | 6,8% | 1,3% |
+| Doadores suspeitos | 71,4% | 71,4% | 0,0% | 14,3% |
+| Hepatite | 58,3% | 45,8% | 16,7% | 8,3% |
+| Fibrose | 76,2% | 66,7% | 14,3% | 0,0% |
+| Cirrose | 86,7% | 63,3% | 70,0% | 50,0% |
+
+Em AST, GGT e BIL, todos os valores fora da faixa estão acima dela. Em CHE, a direção muda conforme o grupo: na cirrose, os 50% fora da faixa estão todos abaixo dela, enquanto nos demais grupos os poucos casos estão acima. AST e GGT já se afastam do padrão dos doadores na hepatite e na fibrose; BIL e CHE só se afastam de forma marcante na cirrose. Entre os doadores, os valores fora da faixa são os outliers do próprio grupo. Os percentuais dos suspeitos se referem a apenas sete participantes.
 """,
         'por_que_esse_grafico': """
-A normalização por categoria permite comparar composições apesar dos diferentes tamanhos dos grupos.
+A normalização por categoria permite comparar composições apesar dos diferentes tamanhos dos grupos. No segundo gráfico, usar os doadores como referência transforma cada exame em uma pergunta simples: que parte do grupo está fora do que é comum entre pessoas sem doença hepática.
 """,
         'relacao_com_pergunta': """
-Evidencia diferenças na distribuição de GGT entre as categorias, complementando a comparação dos valores contínuos.
+Evidencia diferenças na distribuição de GGT entre as categorias e mostra, para os quatro exames da pergunta, em que grupos os valores deixam de ser compatíveis com o padrão dos doadores.
 """,
         'atributo_preatentivo': """
 **Mensagem.** O tercil superior de GGT concentra uma proporção maior dos participantes com hepatite, fibrose e cirrose do que dos doadores.
 
 **O que o público precisa enxergar primeiro.** A diferença no comprimento do segmento do tercil superior entre as categorias.
 
-**Destaque anterior.** Na visualização 6, o código atual já utiliza três intensidades de azul. O tercil superior recebe o azul mais escuro e já tem destaque. O alinhamento pode ser melhorado colocando esse segmento no início de todas as barras, facilitando a comparação a partir de uma origem comum.
+**Destaque anterior.** Na visualização 6, os tercis usavam três intensidades de azul sem relação com o restante do dashboard. O alinhamento também podia ser melhorado colocando o tercil superior no início de todas as barras, facilitando a comparação a partir de uma origem comum.
 
-**Atributo utilizado.** Intensidade crescente de azul, com o tercil superior mais escuro, combinado ao posicionamento desse segmento no início das barras.
+**Atributo utilizado.** Intensidade crescente de verde, com o tercil superior mais escuro e posicionado no início das barras. Como o diagnóstico já está identificado no eixo, a cor representa apenas o nível de GGT.
 
 **Por que serve ao público.** Estudantes e pesquisadores precisam identificar o contraste principal e depois examinar a distribuição e as exceções. O destaque reduz a dependência da leitura repetida da legenda. Rótulos diretos, contagens e posição consistente complementam as cores e favorecem a leitura por pessoas com daltonismo.
 """,
@@ -192,7 +226,7 @@ Ela mostra como diferenças entre grupos podem coexistir com sobreposição indi
 
 **Qual técnica visual destaca a mensagem**
 
-Na visualização 5, cirrose será destacada contra o contexto em cinza. Na visualização 6, o tercil superior será destacado pela intensidade do azul e pelo alinhamento dos segmentos.
+Na visualização 5, cirrose será destacada contra o contexto em cinza. Na visualização 6, o tercil superior será destacado pela intensidade do verde e pelo alinhamento dos segmentos.
 
 **De quais exploratórias nasceram as explanatórias**
 
@@ -209,12 +243,12 @@ A distribuição dos tercis de GGT reforça essas diferenças, com maior concent
 
 Manteremos os suspeitos na pergunta, nas visualizações e na resposta final, explicitando seu tamanho de sete participantes. O perfil é misto:
 
-| Exame | Suspeitos | Doadores | Hepatite | Fibrose | Cirrose |
+| Exame (mediana) | Suspeitos | Doadores | Hepatite | Fibrose | Cirrose |
 |---|---:|---:|---:|---:|---:|
-| AST — mediana | 46,7 | 24,8 | 47,2 | 70,0 | 92,9 |
-| GGT — mediana | 83,0 | 21,4 | 45,55 | 72,2 | 96,35 |
-| BIL — mediana | 4,9 | 6,9 | 13,0 | 13,0 | 34,0 |
-| CHE — mediana | 5,33 | 8,35 | 9,51 | 8,59 | 3,425 |
+| AST | 46,7 | 24,8 | 47,2 | 70,0 | 92,9 |
+| GGT | 83,0 | 21,4 | 45,55 | 72,2 | 96,35 |
+| BIL | 4,9 | 6,9 | 13,0 | 13,0 | 34,0 |
+| CHE | 5,33 | 8,35 | 9,51 | 8,59 | 3,425 |
 
 Em AST e GGT, os suspeitos se aproximam mais dos grupos com doença. Em BIL, têm mediana menor que a dos doadores. Em CHE, ficam entre doadores e cirrose. Portanto, não apresentam um perfil uniformemente semelhante a uma única categoria.
 

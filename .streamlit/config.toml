@@ -1,0 +1,7 @@
+# Tema do dashboard: fundo branco com verde como cor de destaque.
+[theme]
+base = "light"
+primaryColor = "#2E8B57"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#EAF5EE"
+textColor = "#1F2A24"

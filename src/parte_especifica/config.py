@@ -77,12 +77,39 @@ MAPA_CATEGORIAS = {
 }
 ORDEM_CATEGORIAS = ['Doador', 'Doador suspeito', 'Hepatite', 'Fibrose', 'Cirrose']
 CATEGORIAS_DOADORES = ['Doador', 'Doador suspeito']
+# Identidade visual do dashboard: verde como cor principal, sobre fundo branco.
+VERDE_ESCURO = '#1B5E40'
+VERDE = '#2E8B57'
+VERDE_MEDIO = '#66B88A'
+VERDE_CLARO = '#B7DFC5'
+VERDE_FUNDO = '#EAF5EE'
+
+# Sequência padrão dos gráficos sem cores próprias, em verdes de luminosidade bem diferente.
+PALETA_VERDE = [VERDE, VERDE_CLARO, VERDE_ESCURO, VERDE_MEDIO, '#8DB580', '#0E3B28', '#D4EDDC']
+
+# Escala contínua dos heatmaps, do quase branco ao verde-escuro.
+ESCALA_VERDE = [[0.0, '#F4FAF6'], [0.5, VERDE_MEDIO], [1.0, VERDE_ESCURO]]
+
+# Paleta ordenada pela gravidade: verdes para os doadores (sem doença hepática) e tons quentes,
+# cada vez mais escuros, para hepatite, fibrose e cirrose.
 CORES_CATEGORIA = {
-    'Doador': '#0072B2',
-    'Doador suspeito': '#56B4E9',
-    'Hepatite': '#E69F00',
-    'Fibrose': '#D55E00',
-    'Cirrose': '#CC79A7',
+    'Doador': VERDE,
+    'Doador suspeito': VERDE_CLARO,
+    'Hepatite': '#F2B45A',
+    'Fibrose': '#E07B39',
+    'Cirrose': '#B2263A',
+}
+
+# Classes da Parte Comum (dataset Obesity), do menor para o maior peso, com cores em progressão
+# e o peso normal em verde.
+CORES_CLASSES_OBESIDADE = {
+    'Insufficient_Weight': VERDE_CLARO,
+    'Normal_Weight': VERDE,
+    'Overweight_Level_I': '#F2D27A',
+    'Overweight_Level_II': '#F2B45A',
+    'Obesity_Type_I': '#E07B39',
+    'Obesity_Type_II': '#C4492E',
+    'Obesity_Type_III': '#8E1B2C',
 }
 
 ORDEM_SEXO = ['m', 'f']

@@ -22,13 +22,15 @@ def mostrar_nota(chave):
     if not nota:
         st.info('Nota analítica ainda não escrita em notas.py.')
         return
-    for campo, titulo in CAMPOS_NOTA:
-        if nota.get(campo):
-            st.markdown(f'**{titulo}**')
-            st.markdown(nota[campo])
-    if nota.get('atributo_preatentivo'):
-        with st.expander('Atributo pré-atentivo'):
-            st.markdown(nota['atributo_preatentivo'])
+    # O container com chave "nota_..." recebe a fonte menor definida no CSS do dashboard.
+    with st.container(key=f'nota_{chave}'):
+        for campo, titulo in CAMPOS_NOTA:
+            if nota.get(campo):
+                st.markdown(f'**{titulo}**')
+                st.markdown(nota[campo])
+        if nota.get('atributo_preatentivo'):
+            with st.expander('Atributo pré-atentivo'):
+                st.markdown(nota['atributo_preatentivo'])
 
 
 def mostrar_visualizacoes(df, visualizacoes, descricao):
@@ -38,5 +40,7 @@ def mostrar_visualizacoes(df, visualizacoes, descricao):
     for item in visualizacoes:
         st.subheader(item['titulo'])
         st.plotly_chart(item['funcao'](df), width='stretch', key=f"graf_{item['chave']}")
+        for i, complemento in enumerate(item.get('complementos', [])):
+            st.plotly_chart(complemento(df), width='stretch', key=f"graf_{item['chave']}_{i}")
         mostrar_nota(item['chave'])
         st.divider()

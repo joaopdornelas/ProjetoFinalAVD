@@ -39,11 +39,21 @@ def render(df):
         return
 
     valores = sorted(valores, key=str)
+
+    # Mesmos limites nos dois gráficos, calculados sobre o recorte inteiro, para a comparação ser direta.
+    faixa_x = graficos.faixa_eixo(df, x) if graficos.eh_quantitativa(df, x) else None
+    faixa_y = graficos.faixa_eixo(df, y) if graficos.eh_quantitativa(df, y) else None
+    if faixa_x is None and faixa_y is None:
+        contagens = [df[df[recorte] == v].groupby([x, y], observed=True).size() for v in valores]
+        maior_contagem = max((int(c.max()) for c in contagens if len(c)), default=1)
+        faixa_y = [0, maior_contagem * 1.1]
+    st.caption('Os dois gráficos usam os mesmos limites de eixo, calculados sobre todo o recorte filtrado.')
+
     e1, e2 = st.columns(2)
     for coluna, padrao, chave in [(e1, 0, 'exp_lado_a'), (e2, 1, 'exp_lado_b')]:
         with coluna:
             valor = st.selectbox(config.rotulo(recorte), valores, index=padrao, key=chave)
             parte = df[df[recorte] == valor]
-            fig = graficos.fig_relacao(parte, x, y, cor)
+            fig = graficos.fig_relacao(parte, x, y, cor, faixa_x=faixa_x, faixa_y=faixa_y)
             fig.update_layout(title=f'{config.NOMES.get(recorte, recorte)} = {valor} (n = {len(parte)})')
             st.plotly_chart(fig, width='stretch', key=f'{chave}_graf')

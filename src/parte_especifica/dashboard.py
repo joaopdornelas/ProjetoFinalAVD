@@ -25,6 +25,14 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] {
         gap: 6px !important;
     }
+    /* Notas analíticas abaixo dos gráficos com fonte menor que o texto principal. */
+    [class*="st-key-nota_"] p,
+    [class*="st-key-nota_"] li,
+    [class*="st-key-nota_"] td,
+    [class*="st-key-nota_"] th {
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
