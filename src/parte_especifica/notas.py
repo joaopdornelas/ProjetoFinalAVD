@@ -77,7 +77,7 @@ A relação varia bastante. Em cirrose, ela é praticamente nula nesta amostra. 
         'por_que_esse_grafico': """
 Escolhemos o gráfico de dispersão porque AST e GGT são duas variáveis quantitativas e a pergunta é sobre a relação entre elas e sobre a separação dos grupos. Cada ponto representa um participante, o que permite ver ao mesmo tempo a tendência conjunta, a dispersão, as observações extremas e a sobreposição entre os diagnósticos, algo que um resumo por médias ou um boxplot de cada exame separado não mostraria.
 
-Os dois eixos estão em escala logarítmica porque os exames são muito assimétricos: a maioria dos doadores fica abaixo de 50 U/L, mas há participantes acima de 300 U/L. Na escala linear, os doadores ficariam comprimidos no canto do gráfico. As marcas dos eixos seguem a sequência 1, 2, 5, 10, 20, 50…, e a grade secundária ajuda a ler os valores intermediários.
+Os dois eixos estão em escala logarítmica porque os exames são muito assimétricos: a maioria dos doadores fica abaixo de 50 U/L, mas há participantes acima de 300 U/L. Na escala linear, os doadores ficariam comprimidos no canto do gráfico. Os dois eixos usam as mesmas marcas (5, 10, 20, 50, 100, 200 e 500 U/L), o que torna as distâncias comparáveis entre AST e GGT, e o intervalo de cada eixo é calculado a partir dos dados, com margem para que nenhum ponto fique cortado.
 """,
     },
     'spearman': {

@@ -10,7 +10,6 @@ from plotly.subplots import make_subplots
 import config
 
 COR_GRADE = '#E3EFE7'
-COR_GRADE_SECUNDARIA = '#F1F7F3'
 
 # Tema dos gráficos: fundo branco do plotly_white com a paleta e a grade em verde.
 # É registrado como padrão para que as funções do plotly express já usem as cores verdes.
@@ -80,11 +79,8 @@ def _tamanhos_grupos(df):
     return 'Participantes por grupo — ' + ' · '.join(partes)
 
 
-def _ticks_log(valores):
-    """Marcas 1-2-5 dentro da faixa dos dados, para eixos em escala logarítmica."""
-    minimo, maximo = valores[valores > 0].min(), valores.max()
-    marcas = [m * 10 ** e for e in range(-1, 5) for m in (1, 2, 5)]
-    return [m for m in marcas if minimo / 2 <= m <= maximo * 2]
+# Marcas dos eixos em escala logarítmica (sequência 1-2-5).
+MARCAS_LOG = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000]
 
 
 def _formatar_pct(valor):
@@ -166,13 +162,18 @@ def fig_ast_ggt(df):
         labels=_rotulos(df), hover_data=['idade', 'sexo'],
     )
     fig.update_traces(marker=dict(size=7, line=dict(width=0.5, color='white')))
+
+    # Mesmas marcas nos dois eixos, escolhidas para cobrir AST e GGT juntos.
+    exames = pd.concat([df['ast'], df['ggt']])
+    exames = exames[exames > 0]
+    marcas = [m for m in MARCAS_LOG if exames.min() / 1.3 <= m <= exames.max() * 1.3]
     for eixo, coluna in [(fig.update_xaxes, 'ast'), (fig.update_yaxes, 'ggt')]:
-        valores = df[coluna]
+        valores = df.loc[df[coluna] > 0, coluna]
         eixo(
-            tickvals=_ticks_log(valores), ticktext=[f'{v:g}'.replace('.', ',') for v in _ticks_log(valores)],
-            range=[np.log10(valores[valores > 0].min() * 0.85), np.log10(valores.max() * 1.15)],
-            showgrid=True, gridcolor=COR_GRADE, zeroline=False,
-            minor=dict(showgrid=True, gridcolor=COR_GRADE_SECUNDARIA),
+            tickvals=marcas, ticktext=[f'{m:g}' for m in marcas],
+            # Intervalo calculado a partir dos dados, com margem para nenhum ponto ficar cortado.
+            range=[np.log10(valores.min() / 1.25), np.log10(valores.max() * 1.25)],
+            showgrid=True, gridcolor=COR_GRADE, zeroline=False, minor=dict(showgrid=False),
         )
     fig.update_layout(height=560, legend=dict(title_text='Diagnóstico', itemsizing='constant'))
     return aplicar_layout(fig, 'Relação entre AST e GGT por diagnóstico (escalas logarítmicas)',
@@ -481,49 +482,46 @@ def tabela_mapeamento(clusters, passada):
     return pd.DataFrame(linhas)
 
 
-def fig_caminho_clusters(clusters, passada):
-    """Sankey classe real → cluster → classe mapeada: o caminho de cada registro até o rótulo atribuído."""
+def fig_classe_cluster(clusters, passada):
+    """Heatmap classe real × cluster, em % de cada classe real, com a contagem de registros em cada célula."""
     col_cluster = f'cluster_{passada}'
     col_mapeada = f'classe_mapeada_{passada}'
     ordem = list(config.CORES_CLASSES_OBESIDADE)
     classes = [c for c in ordem if c in set(clusters['classe_real'])]
-    mapeadas = [c for c in ordem if c in set(clusters[col_mapeada])]
-    ids_clusters = sorted(clusters[col_cluster].unique())
+    mapa = clusters.groupby(col_cluster)[col_mapeada].first()
+    # Colunas ordenadas pela classe atribuída ao cluster (na ordem natural das classes) e, no empate, pelo número.
+    ids = sorted(mapa.index, key=lambda k: (ordem.index(mapa[k]), k))
 
-    nos = ([f'{c} (real)' for c in classes] + [f'Cluster {k}' for k in ids_clusters]
-           + [f'{c} (mapeada)' for c in mapeadas])
-    indice_real = {c: i for i, c in enumerate(classes)}
-    indice_cluster = {k: len(classes) + i for i, k in enumerate(ids_clusters)}
-    indice_mapeada = {c: len(classes) + len(ids_clusters) + i for i, c in enumerate(mapeadas)}
+    contagem = pd.crosstab(clusters['classe_real'], clusters[col_cluster]).reindex(
+        index=classes, columns=ids, fill_value=0)
+    pct = contagem.div(contagem.sum(axis=1), axis=0) * 100
+    colunas = [f'Cluster {k}<br>→ {mapa[k]}' for k in ids]
 
-    def transparente(cor, alfa=0.45):
-        r, g, b = (int(cor.lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
-        return f'rgba({r},{g},{b},{alfa})'
-
-    origem, destino, valor, cor_link = [], [], [], []
-    for (real, cluster), n in clusters.groupby(['classe_real', col_cluster]).size().items():
-        origem.append(indice_real[real])
-        destino.append(indice_cluster[cluster])
-        valor.append(int(n))
-        cor_link.append(transparente(config.CORES_CLASSES_OBESIDADE[real]))
-    for (cluster, mapeada), n in clusters.groupby([col_cluster, col_mapeada]).size().items():
-        origem.append(indice_cluster[cluster])
-        destino.append(indice_mapeada[mapeada])
-        valor.append(int(n))
-        cor_link.append(transparente(config.CORES_CLASSES_OBESIDADE[mapeada], 0.3))
-
-    cores_nos = ([config.CORES_CLASSES_OBESIDADE[c] for c in classes] + ['#555555'] * len(ids_clusters)
-                 + [config.CORES_CLASSES_OBESIDADE[c] for c in mapeadas])
-    fig = go.Figure(go.Sankey(
-        arrangement='snap',
-        node=dict(label=nos, color=cores_nos, pad=14, thickness=16),
-        link=dict(source=origem, target=destino, value=valor, color=cor_link),
+    fig = go.Figure(go.Heatmap(
+        z=pct.values, x=colunas, y=classes, zmin=0, zmax=100, colorscale=config.ESCALA_VERDE,
+        showscale=False, xgap=3, ygap=3, customdata=contagem.values,
+        hovertemplate='Classe real: %{y}<br>%{x}<br>%{z:.1f}% da classe (%{customdata} registros)<extra></extra>',
     ))
-    fig.update_layout(height=620, font=dict(size=12))
+    for i, classe in enumerate(classes):
+        for j, cluster in enumerate(ids):
+            n = int(contagem.iat[i, j])
+            if n:
+                fig.add_annotation(
+                    x=colunas[j], y=classe, text=f'{_formatar_pct(pct.iat[i, j])}<br>({n})', showarrow=False,
+                    font=dict(size=12, color='white' if pct.iat[i, j] > 55 else '#1F2A24'),
+                )
+            # Contorno nas células em que o cluster recebeu a própria classe da linha: a soma delas é o recall.
+            if mapa[cluster] == classe:
+                fig.add_shape(type='rect', x0=j - 0.5, x1=j + 0.5, y0=i - 0.5, y1=i + 0.5,
+                              line=dict(color=config.VERDE_ESCURO, width=2.5))
+
+    fig.update_xaxes(showgrid=False, tickangle=0, tickfont=dict(size=12), automargin=True)
+    fig.update_yaxes(showgrid=False, autorange='reversed', tickfont=dict(size=12))
+    fig.update_layout(height=560, plot_bgcolor='white')
     nome = 'Passada 1 — k livre' if passada == 'livre' else 'Passada 2 — k fixo'
-    return aplicar_layout(fig, f'{nome}: caminho de cada classe real até a classe mapeada',
-                          subtitulo='Esquerda: classe real · Centro: cluster do K-Means · '
-                                    'Direita: classe atribuída ao cluster (a majoritária)')
+    return aplicar_layout(fig, f'{nome}: distribuição de cada classe real entre os clusters',
+                          subtitulo='Percentual da linha (contagem entre parênteses). Contorno: cluster atribuído '
+                                    'à própria classe; a soma dos contornos de uma linha é o recall da classe.')
 
 
 def fig_matriz_confusao(matriz, titulo):

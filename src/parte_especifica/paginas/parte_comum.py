@@ -53,12 +53,14 @@ def render(dados):
     st.subheader('Do cluster à classe original')
     st.markdown(
         'O K-Means não conhece as classes. Depois do agrupamento, cada cluster recebe a classe que mais aparece '
-        'entre os seus registros (classe majoritária). O diagrama mostra esse caminho: de onde vêm os registros de '
-        'cada classe real, em qual cluster eles caem e qual classe o cluster acaba recebendo. Classes que não são '
-        'majoritárias em nenhum cluster não aparecem à direita e, por isso, têm recall zero.'
+        'entre os seus registros (classe majoritária), indicada no rótulo de cada coluna (“Cluster N → classe”). '
+        'No heatmap, cada linha é uma classe real e mostra como os seus registros se distribuem entre os clusters, '
+        'em percentual da linha, com a contagem entre parênteses. As células com contorno são aquelas em que o '
+        'cluster recebeu a própria classe da linha, e a soma delas é o recall da classe. Classes que não são '
+        'majoritárias em nenhum cluster não têm célula com contorno e, por isso, continuam com recall zero.'
     )
-    st.plotly_chart(graficos.fig_caminho_clusters(dados['clusters'], passada), width='stretch',
-                    key='pc_caminho')
+    st.plotly_chart(graficos.fig_classe_cluster(dados['clusters'], passada), width='stretch',
+                    key='pc_classe_cluster')
     st.markdown('**Mapeamento de cada cluster**')
     st.dataframe(graficos.tabela_mapeamento(dados['clusters'], passada), width='stretch', hide_index=True)
 
