@@ -46,7 +46,12 @@ source .venv/bin/activate     # Linux/macOS
 pip install -r requirements.txt
 ```
 
+O `requirements.txt` lista só as bibliotecas usadas pelo projeto. Para abrir os notebooks, use o VS Code
+com a extensão Jupyter ou instale o Jupyter no mesmo ambiente (`pip install notebook`).
+
 ## Execução
+
+Os comandos abaixo devem ser executados a partir da raiz do repositório.
 
 ```bash
 # Parte Comum

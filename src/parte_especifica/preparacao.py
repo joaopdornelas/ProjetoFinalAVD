@@ -12,33 +12,22 @@ from sklearn.preprocessing import StandardScaler
 
 import config
 
-# ---------------------------------------------------------------------------
-# Decisões do grupo. Cada uma precisa de justificativa no relatório.
-# ---------------------------------------------------------------------------
+# Decisões de tratamento. As justificativas estão no EDA (src/parte_especifica/eda.ipynb).
 
-# Destino das linhas "0s=suspect Blood Donor": 'manter', 'juntar_doadores' ou 'excluir'.
+# Doadores suspeitos ("0s=suspect Blood Donor"): 'manter', 'juntar_doadores' ou 'excluir'.
 DESTINO_SUSPEITOS = 'manter'
 
-# Tratamento dos ausentes: None (ainda não decidido), 'mediana_global', 'mediana_por_grupo' ou 'knn'.
+# Valores ausentes: None (não tratar), 'mediana_global', 'mediana_por_grupo' ou 'knn'.
 ESTRATEGIA_AUSENTES = 'knn'
 VIZINHOS_KNN = 5
 
-# Tratamento dos outliers: None (manter) ou 'clip' (limitar aos percentis abaixo).
+# Outliers: None mantém os valores originais; 'clip' limita aos percentis abaixo.
 TRATAMENTO_OUTLIERS = None
 PERCENTIS_CLIP = (0.01, 0.99)
 COLS_OUTLIERS = config.COLS_EXAMES
 
-# Discretizações: cada entrada cria uma nova variável qualitativa ordenada a partir de uma quantitativa.
-#   'origem':  coluna quantitativa de origem
-#   'tecnica': 'cut' (limites fixos e interpretáveis) ou 'qcut' (quantis, grupos de tamanho igual)
-#   'limites': lista de limites para 'cut' ou número de grupos para 'qcut'
-#   'rotulos': nomes das faixas, em ordem crescente
-# Convenção de nomes: 'faixa_etaria' para a idade e '<exame>_nivel' para um exame (ex.: 'alt_nivel').
-# Formato:
-#   DISCRETIZACOES = {
-#       'faixa_etaria': {'origem': 'idade', 'tecnica': 'cut', 'limites': [...], 'rotulos': [...]},
-#       '<exame>_nivel': {'origem': '<exame>', 'tecnica': 'cut', 'limites': [...], 'rotulos': [...]},
-#   }
+# Variáveis qualitativas ordenadas criadas a partir de quantitativas.
+# 'cut' usa limites fixos; 'qcut' divide a amostra em grupos de tamanho igual ('limites' = nº de grupos).
 DISCRETIZACOES = {
     'faixa_etaria': {
         'origem': 'idade',
@@ -186,10 +175,7 @@ def main():
 
     restantes = int(df[config.COLS_EXAMES].isna().sum().sum())
     if restantes:
-        warnings.warn(
-            f'{restantes} valores ausentes ainda sem tratamento. '
-            'Defina ESTRATEGIA_AUSENTES antes da versão final.'
-        )
+        warnings.warn(f'{restantes} valores ausentes continuam nos exames (ESTRATEGIA_AUSENTES = None).')
 
     config.DIR_OUT.mkdir(parents=True, exist_ok=True)
     df.to_csv(config.ARQ_TRATADO, index_label='paciente')

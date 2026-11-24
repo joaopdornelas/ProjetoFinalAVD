@@ -1,4 +1,4 @@
-"""Dashboard do projeto.
+"""Dashboard da Parte Específica (Hepatite C), com uma página para os resultados da Parte Comum.
 
 Uso, a partir da raiz do repositório:
     streamlit run src/parte_especifica/dashboard.py
@@ -7,9 +7,13 @@ Uso, a partir da raiz do repositório:
 import pandas as pd
 import streamlit as st
 
+import config
+import preparacao
+from paginas import contexto, exploracao, explorador, parte_comum, resposta
+
 st.set_page_config(page_title='Projeto Final AVD — Hepatite C', layout='wide')
 
-# [IA] Gemini – ajuste discreto no tamanho da fonte da barra lateral
+# Fonte e espaçamento maiores nas opções da barra lateral.
 st.markdown(
     """
     <style>
@@ -25,10 +29,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-import config
-import preparacao
-from paginas import contexto, exploracao, explorador, parte_comum, resposta
 
 PAGINAS = {
     'Contexto': contexto,
@@ -49,7 +49,7 @@ def carregar_parte_comum():
     pasta = config.DIR_OUT_COMUM
     if not (pasta / 'resumo.csv').exists():
         return None
-    dados = {
+    return {
         'resumo': pd.read_csv(pasta / 'resumo.csv'),
         'cotovelo': pd.read_csv(pasta / 'cotovelo.csv'),
         'clusters': pd.read_csv(pasta / 'clusters.csv'),
@@ -57,12 +57,9 @@ def carregar_parte_comum():
         'matriz_fixo': pd.read_csv(pasta / 'matriz_confusao_fixo.csv', index_col=0),
         'metricas_livre': pd.read_csv(pasta / 'metricas_livre.csv'),
         'metricas_fixo': pd.read_csv(pasta / 'metricas_fixo.csv'),
+        'composicao_livre': pd.read_csv(pasta / 'composicao_livre.csv', index_col=0),
+        'composicao_fixo': pd.read_csv(pasta / 'composicao_fixo.csv', index_col=0),
     }
-    for passada in ['livre', 'fixo']:
-        arquivo = pasta / f'composicao_{passada}.csv'
-        if arquivo.exists():
-            dados[f'composicao_{passada}'] = pd.read_csv(arquivo, index_col=0)
-    return dados
 
 
 def aplicar_filtros(df, categorias, sexos, idade_min, idade_max):
@@ -84,12 +81,12 @@ df = carregar_hepatite()
 
 st.sidebar.divider()
 st.sidebar.header('Filtros')
-categorias_disp = list(df['categoria'].cat.categories)
-categorias = st.sidebar.multiselect('Diagnóstico', categorias_disp, default=categorias_disp, key='f_categoria')
+todas_categorias = list(df['categoria'].cat.categories)
+categorias = st.sidebar.multiselect('Diagnóstico', todas_categorias, default=todas_categorias, key='f_categoria')
 sexos = st.sidebar.multiselect('Sexo', config.ORDEM_SEXO, default=config.ORDEM_SEXO, key='f_sexo',
                                format_func=lambda s: config.ROTULOS_SEXO[s])
-idade_lim = (int(df['idade'].min()), int(df['idade'].max()))
-idade_min, idade_max = st.sidebar.slider('Idade (anos)', *idade_lim, value=idade_lim, key='f_idade')
+limites_idade = (int(df['idade'].min()), int(df['idade'].max()))
+idade_min, idade_max = st.sidebar.slider('Idade (anos)', *limites_idade, value=limites_idade, key='f_idade')
 
 df_filtrado = aplicar_filtros(df, categorias, sexos, idade_min, idade_max)
 st.sidebar.caption(f'{len(df_filtrado)} de {len(df)} registros no recorte')

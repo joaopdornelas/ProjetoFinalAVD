@@ -39,10 +39,9 @@ def render(dados):
         st.markdown('**Precisão e recall por classe**')
         st.dataframe(dados[f'metricas_{passada}'].round(3), width='stretch', hide_index=True)
     with c4:
-        composicao = dados.get(f'composicao_{passada}')
-        if composicao is not None:
-            st.plotly_chart(graficos.fig_composicao(composicao, f'Classe real × cluster — passada {passada}'),
-                            width='stretch', key='pc_composicao')
+        st.plotly_chart(graficos.fig_composicao(dados[f'composicao_{passada}'],
+                                                f'Classe real × cluster — passada {passada}'),
+                        width='stretch', key='pc_composicao')
 
     with st.expander('Transição animada entre as passadas'):
         st.plotly_chart(graficos.fig_clusters_animado(dados['clusters']), width='stretch', key='pc_animacao')

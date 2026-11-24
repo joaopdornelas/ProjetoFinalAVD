@@ -1,8 +1,8 @@
-pandas
-numpy
-matplotlib
-seaborn
-plotly
-scikit-learn
-streamlit
-notebook
+# Python 3.11 ou superior. Testado com estas versões mínimas e com as mais recentes (nov/2026).
+pandas>=2.2
+numpy>=1.26
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.24
+scikit-learn>=1.5  # a versão 1.4 inverte o sinal dos eixos do PCA da Parte Comum (testado)
+streamlit>=1.51    # primeira versão com width='stretch' em st.plotly_chart

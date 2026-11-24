@@ -50,7 +50,9 @@ NOMES = {
     'ggt_nivel': 'Tercil de GGT',
 }
 
-# Unidades a conferir no artigo de origem (Hoffmann et al., 2018) antes de rotular os eixos.
+# A página do dataset na UCI não informa as unidades. Estas são as usuais para cada exame e batem
+# com as faixas de valores da base, mas ainda precisam ser conferidas no artigo de origem
+# (Hoffmann et al., 2018).
 UNIDADES = {
     'idade': 'anos',
     'alb': 'g/L',
@@ -65,7 +67,7 @@ UNIDADES = {
     'prot': 'g/L',
 }
 
-# Rótulos originais do CSV (parte depois do "=" em Category) -> rótulos usados no projeto.
+# Rótulo original do CSV (texto depois do "=" em Category) e o nome usado no projeto.
 MAPA_CATEGORIAS = {
     'Blood Donor': 'Doador',
     'suspect Blood Donor': 'Doador suspeito',
@@ -88,8 +90,7 @@ ROTULOS_SEXO = {'m': 'Masculino', 'f': 'Feminino'}
 
 
 def rotulo(coluna):
-    if coluna not in NOMES and coluna.endswith('_nivel') and coluna[:-len('_nivel')] in NOMES:
-        return f"Nível de {NOMES[coluna[:-len('_nivel')]]}"
+    """Nome da coluna para eixos e legendas, com a unidade entre colchetes quando houver."""
     nome = NOMES.get(coluna, coluna)
     unidade = UNIDADES.get(coluna)
     return f'{nome} [{unidade}]' if unidade else nome

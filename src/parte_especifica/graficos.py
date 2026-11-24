@@ -72,11 +72,11 @@ def fig_ausentes_por_categoria(df):
     ordem = _categorias(df)
     grupos = df.groupby('categoria', observed=True)[cols_flag]
     pct = (grupos.mean() * 100).reindex(ordem)
-    cont = grupos.sum().reindex(ordem).astype(int)
+    contagem = grupos.sum().reindex(ordem).astype(int)
     tamanhos = df['categoria'].value_counts().reindex(ordem)
 
     exames = [c.replace('_ausente', '').upper() for c in cols_flag]
-    texto = [[f'{pct.iloc[i, j]:.1f}%<br>({cont.iloc[i, j]}/{tamanhos.iloc[i]})' for j in range(len(cols_flag))]
+    texto = [[f'{pct.iloc[i, j]:.1f}%<br>({contagem.iloc[i, j]}/{tamanhos.iloc[i]})' for j in range(len(cols_flag))]
              for i in range(len(ordem))]
 
     fig = go.Figure(go.Heatmap(
@@ -151,11 +151,11 @@ def fig_perfis_laboratoriais(df):
 def fig_tercis_ggt(df):
     ordem = _categorias(df)
     niveis = list(df['ggt_nivel'].cat.categories)
-    cont = pd.crosstab(df['categoria'], df['ggt_nivel']).reindex(index=ordem, columns=niveis, fill_value=0)
-    pct = cont.div(cont.sum(axis=1), axis=0) * 100
+    contagem = pd.crosstab(df['categoria'], df['ggt_nivel']).reindex(index=ordem, columns=niveis, fill_value=0)
+    pct = contagem.div(contagem.sum(axis=1), axis=0) * 100
 
     longo = pct.stack().rename('pct').reset_index().merge(
-        cont.stack().rename('n').reset_index(), on=['categoria', 'ggt_nivel'])
+        contagem.stack().rename('n').reset_index(), on=['categoria', 'ggt_nivel'])
     longo['rotulo_cat'] = longo['categoria'].map(lambda c: _rotulo_com_n(df, c))
 
     # Atributo pré-atentivo da visualização 6: intensidade crescente de azul, com o tercil superior
@@ -197,7 +197,6 @@ EXPLANATORIAS = [
 # Explorador livre
 # ---------------------------------------------------------------------------
 
-# [IA] Gemini – aumento dos marcadores e configuração da legenda para legibilidade
 def fig_relacao(df, x, y, cor=None):
     quant_x, quant_y = eh_quantitativa(df, x), eh_quantitativa(df, y)
     cores = config.CORES_CATEGORIA if cor == 'categoria' else None
@@ -213,17 +212,17 @@ def fig_relacao(df, x, y, cor=None):
         fig = px.box(df, x=x, y=y, color=cor, points='outliers', orientation='h', **comum)
         fig.update_traces(marker=dict(size=8))
     else:
-        cores = config.CORES_CATEGORIA if y == 'categoria' else None
-        comum['color_discrete_map'] = cores
+        # Duas qualitativas: barras agrupadas, coloridas pela variável do eixo y.
+        comum['color_discrete_map'] = config.CORES_CATEGORIA if y == 'categoria' else None
         fig = px.histogram(df, x=x, color=y, barmode='group', **comum)
         fig.update_yaxes(title_text='Registros')
 
-    legenda_col = cor if (quant_x or quant_y) else y
-    if legenda_col is not None:
+    coluna_legenda = cor if (quant_x or quant_y) else y
+    if coluna_legenda is not None:
         fig.update_layout(
             showlegend=True,
             legend=dict(
-                title_text=config.rotulo(legenda_col),
+                title_text=config.rotulo(coluna_legenda),
                 font=dict(size=13),
                 title_font=dict(size=13),
                 itemsizing='constant',
