@@ -20,7 +20,7 @@ import config
 DESTINO_SUSPEITOS = 'manter'
 
 # Tratamento dos ausentes: None (ainda não decidido), 'mediana_global', 'mediana_por_grupo' ou 'knn'.
-ESTRATEGIA_AUSENTES = None
+ESTRATEGIA_AUSENTES = 'knn'
 VIZINHOS_KNN = 5
 
 # Tratamento dos outliers: None (manter) ou 'clip' (limitar aos percentis abaixo).
@@ -67,17 +67,17 @@ def separar_categoria(df):
     df = df.copy()
     partes = df['categoria'].str.split('=', n=1, expand=True)
     df['categoria_cod'] = partes[0]
-    df['categoria'] = partes[1]
+    df['categoria'] = partes[1].map(config.MAPA_CATEGORIAS)
     return df
 
 
 def tratar_suspeitos(df):
-    suspeitos = df['categoria'] == 'suspect Blood Donor'
+    suspeitos = df['categoria'] == 'Doador suspeito'
     if DESTINO_SUSPEITOS == 'manter':
         return df
     if DESTINO_SUSPEITOS == 'juntar_doadores':
         df = df.copy()
-        df.loc[suspeitos, 'categoria'] = 'Blood Donor'
+        df.loc[suspeitos, 'categoria'] = 'Doador'
         df.loc[suspeitos, 'categoria_cod'] = '0'
         return df
     if DESTINO_SUSPEITOS == 'excluir':
@@ -107,11 +107,14 @@ def tratar_ausentes(df):
         for col in cols:
             df[col] = df[col].fillna(df.groupby('categoria')[col].transform('median'))
     elif ESTRATEGIA_AUSENTES == 'knn':
+        # Distâncias calculadas só com idade e exames padronizados; categoria e discretizadas ficam de fora.
+        cols_knn = config.COLS_QUANTITATIVAS
         scaler = StandardScaler()
-        padronizado = scaler.fit_transform(df[config.COLS_QUANTITATIVAS])
+        padronizado = scaler.fit_transform(df[cols_knn])
         imputado = KNNImputer(n_neighbors=VIZINHOS_KNN).fit_transform(padronizado)
-        df[config.COLS_QUANTITATIVAS] = scaler.inverse_transform(imputado)
-        df['idade'] = df['idade'].round().astype(int)
+        estimado = pd.DataFrame(scaler.inverse_transform(imputado), columns=cols_knn, index=df.index)
+        for col in cols:
+            df[col] = df[col].fillna(estimado[col])
     else:
         raise ValueError(f'ESTRATEGIA_AUSENTES inválida: {ESTRATEGIA_AUSENTES}')
     return df

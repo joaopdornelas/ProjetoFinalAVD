@@ -65,20 +65,22 @@ UNIDADES = {
     'prot': 'g/L',
 }
 
-ORDEM_CATEGORIAS = ['Blood Donor', 'suspect Blood Donor', 'Hepatitis', 'Fibrosis', 'Cirrhosis']
-ROTULOS_CATEGORIA = {
+# Rótulos originais do CSV (parte depois do "=" em Category) -> rótulos usados no projeto.
+MAPA_CATEGORIAS = {
     'Blood Donor': 'Doador',
     'suspect Blood Donor': 'Doador suspeito',
     'Hepatitis': 'Hepatite',
     'Fibrosis': 'Fibrose',
     'Cirrhosis': 'Cirrose',
 }
+ORDEM_CATEGORIAS = ['Doador', 'Doador suspeito', 'Hepatite', 'Fibrose', 'Cirrose']
+CATEGORIAS_DOADORES = ['Doador', 'Doador suspeito']
 CORES_CATEGORIA = {
-    'Blood Donor': '#0072B2',
-    'suspect Blood Donor': '#56B4E9',
-    'Hepatitis': '#E69F00',
-    'Fibrosis': '#D55E00',
-    'Cirrhosis': '#CC79A7',
+    'Doador': '#0072B2',
+    'Doador suspeito': '#56B4E9',
+    'Hepatite': '#E69F00',
+    'Fibrose': '#D55E00',
+    'Cirrose': '#CC79A7',
 }
 
 ORDEM_SEXO = ['m', 'f']

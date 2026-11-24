@@ -16,6 +16,9 @@ def render(df):
         st.subheader('Público-alvo')
         componentes.texto_ou_pendente(notas.PUBLICO_ALVO, 'Público-alvo')
 
+    with st.expander('Enquadramento: classificação ou agrupamento'):
+        componentes.texto_ou_pendente(notas.ENQUADRAMENTO, 'Enquadramento')
+
     st.subheader('Sobre os dados')
     st.markdown(
         'Exames de sangue e dados demográficos de doadores de sangue e de pacientes com hepatite C '
@@ -23,7 +26,7 @@ def render(df):
         'Repository (Lichtinghagen, Klawonn e Hoffmann, 2020), licença CC BY 4.0.'
     )
 
-    doadores = df['categoria'].isin(['Blood Donor', 'suspect Blood Donor'])
+    doadores = df['categoria'].isin(config.CATEGORIAS_DOADORES)
     cols_ausente = [c for c in df.columns if c.endswith('_ausente')]
     m1, m2, m3, m4 = st.columns(4)
     m1.metric('Registros no recorte', len(df))

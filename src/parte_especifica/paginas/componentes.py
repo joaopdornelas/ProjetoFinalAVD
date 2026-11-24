@@ -2,6 +2,13 @@ import streamlit as st
 
 import notas
 
+CAMPOS_NOTA = [
+    ('o_que_mostra', 'O que está sendo mostrado'),
+    ('insight', 'Insight'),
+    ('por_que_esse_grafico', 'Por que este gráfico'),
+    ('relacao_com_pergunta', 'Relação com a pergunta'),
+]
+
 
 def texto_ou_pendente(texto, descricao):
     if texto and texto.strip():
@@ -15,9 +22,13 @@ def mostrar_nota(chave):
     if not nota:
         st.info('Nota analítica ainda não escrita em notas.py.')
         return
-    st.markdown(f"**O que está sendo mostrado.** {nota.get('o_que_mostra', '')}")
-    st.markdown(f"**Insight.** {nota.get('insight', '')}")
-    st.markdown(f"**Por que este gráfico.** {nota.get('por_que_esse_grafico', '')}")
+    for campo, titulo in CAMPOS_NOTA:
+        if nota.get(campo):
+            st.markdown(f'**{titulo}**')
+            st.markdown(nota[campo])
+    if nota.get('atributo_preatentivo'):
+        with st.expander('Atributo pré-atentivo'):
+            st.markdown(nota['atributo_preatentivo'])
 
 
 def mostrar_visualizacoes(df, visualizacoes, descricao):
