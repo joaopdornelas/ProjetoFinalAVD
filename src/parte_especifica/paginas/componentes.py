@@ -4,7 +4,7 @@ import notas
 
 CAMPOS_NOTA = [
     ('o_que_mostra', 'O que está sendo mostrado'),
-    ('insight', 'Insight'),
+    ('insight', 'Resultados da amostra completa'),
     ('por_que_esse_grafico', 'Por que este gráfico'),
     ('relacao_com_pergunta', 'Relação com a pergunta'),
 ]

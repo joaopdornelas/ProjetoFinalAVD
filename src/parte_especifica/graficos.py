@@ -426,10 +426,10 @@ def fig_cotovelo(cotovelo, k_livre=None, k_fixo=None):
     for coluna in range(1, len(titulos) + 1):
         if k_livre is not None:
             fig.add_vline(x=k_livre, line_dash='dash', line_color=config.VERDE_ESCURO, row=1, col=coluna,
-                          annotation_text=f'k livre = {k_livre}' if coluna == 1 else None)
+                          annotation_text=f'k livre = {k_livre}')
         if k_fixo is not None:
             fig.add_vline(x=k_fixo, line_dash='dot', line_color='#666666', row=1, col=coluna,
-                          annotation_text=f'k fixo = {k_fixo}' if coluna == 1 else None,
+                          annotation_text=f'k fixo = {k_fixo}',
                           annotation_position='bottom right')
         fig.update_xaxes(title_text='Número de clusters (k)', dtick=1, row=1, col=coluna)
     fig.update_yaxes(title_text='Inércia', row=1, col=1)

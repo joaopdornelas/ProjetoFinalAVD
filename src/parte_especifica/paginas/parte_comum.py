@@ -22,9 +22,9 @@ def render(dados):
     st.plotly_chart(graficos.fig_cotovelo(dados['cotovelo'], k_livre, k_fixo), width='stretch', key='pc_cotovelo')
     st.caption(
         'A inércia sempre diminui quando k aumenta; o k livre é o ponto em que essa queda perde força (o cotovelo). '
-        'A silhueta mede, de 0 a 1, o quanto cada registro está mais próximo do próprio cluster do que do vizinho. '
-        'Ela é usada só como apoio: os valores baixos em todos os k (entre 0,12 e 0,22) indicam que as classes de peso '
-        'formam uma escala contínua, sem grupos bem separados, e por isso a silhueta não aponta o mesmo k que o cotovelo.'
+        'A silhueta varia de −1 a 1 e compara a proximidade ao próprio cluster com a proximidade ao cluster vizinho. '
+        'Os valores próximos de zero indicam pouca separação nos agrupamentos testados. '
+        'O maior valor de silhueta ocorre em k = 2, enquanto o cotovelo indica k = 6.'
     )
 
     st.divider()
